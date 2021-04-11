@@ -16,7 +16,18 @@ class YoutubeController extends Controller
     {
         return view('upload');
     }
-
+    public function videos()
+    {
+        return view('index');
+    }
+    public function results()
+    {
+        return view('results');
+    }
+    public function watch()
+    {
+        return view('watch');
+    }
     /**
      * Show the form for creating a new resource.
      *
