@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use YoutubeAPI;
 
 class YoutubeController extends Controller
@@ -18,15 +20,28 @@ class YoutubeController extends Controller
     }
     public function videos()
     {
-        return view('index');
+        if (session('search_query')) {
+            $videoLists = $this->_videoLists(session('search_query'));
+        } else {
+            $videoLists = $this->_videoLists('music');
+        }
+        return view('index', compact('videoLists'));
     }
-    public function results()
+    public function results(Request $request)
     {
-        return view('results');
+        session(['search_query' => $request->search_query]);
+        $videoLists = $this->_videoLists($request->search_query);
+        return view('results', compact('videoLists'));
     }
-    public function watch()
+    public function watch($id)
     {
-        return view('watch');
+        $singleVideo = $this->_singleVideo($id);
+        if (session('search_query')) {
+            $videoLists = $this->_videoLists(session('search_query'));
+        } else {
+            $videoLists = $this->_videoLists('music');
+        }
+        return view('watch', compact('singleVideo', 'videoLists'));
     }
     /**
      * Show the form for creating a new resource.
@@ -97,5 +112,37 @@ class YoutubeController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    //get search results
+    protected function _videoLists($keywords)
+    {
+        $part = 'snippet';
+        $country = 'LT';
+        $apiKey = config('services.youtube.api_key');
+        $maxResults = 16;
+        $youTubeEndPoint = config('services.youtube.search_endpoint');
+        $type = 'video';
+
+        $url = "$youTubeEndPoint?part=$part&maxResults=$maxResults&regionCode=$country&type=$type&key=$apiKey&q=$keywords";
+        $response = Http::get($url);
+        $results = json_decode($response);
+        File::put(storage_path() . '/app/public/results.json', $response->body());
+
+        return $results;
+    }
+
+    //single video watch
+    protected function _singleVideo($id)
+    {
+        $apiKey = config('services.youtube.api_key');
+        $part = 'snippet';
+
+        $url = "https://www.googleapis.com/youtube/v3/videos?part=$part&id=$id&key=$apiKey";
+        $response = Http::get($url);
+        $results = json_decode($response);
+        File::put(storage_path() . '/app/public/single.json', $response->body());
+    
+        return $results;
     }
 }

@@ -3,66 +3,22 @@
 @section('content')
     <div class="container mt-4">
         <div class="row">
-            <div class="col-3">
-                <a href="">
-                    <div class="card mb-4">
-                        <img src="https://cdn.searchenginejournal.com/wp-content/uploads/2019/07/shutterstock_1457601002.png"
-                            class="img-fluid" alt="">
-                        <div class="card-body">
-                            <h5 class="card-titled">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus
-                                repellat illo quis deserunt nemo voluptas!</h5>
+            @foreach ($videoLists->items as $key => $item)
+                <div class="col-3">
+                    <a href=" {{ route('watch', $item->id->videoId) }} ">
+                        <div class="card mb-4">
+                            <img src="{{ $item->snippet->thumbnails->medium->url }}"
+                                class="img-fluid" alt="">
+                            <div class="card-body">
+                                <h5 class="card-titled">{{ \Illuminate\Support\str::limit($item->snippet->title, $limit = 50, $end = ' ...') }}</h5>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Published at {{ date('Y M d', strtotime($item->snippet->publishTime)) }}
+                            </div>
                         </div>
-                        <div class="card-footer text-muted">
-                            Published at 2021-04-11
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3">
-                <a href="">
-                    <div class="card mb-4">
-                        <img src="https://cdn.searchenginejournal.com/wp-content/uploads/2019/07/shutterstock_1457601002.png"
-                            class="img-fluid" alt="">
-                        <div class="card-body">
-                            <h5 class="card-titled">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus
-                                repellat illo quis deserunt nemo voluptas!</h5>
-                        </div>
-                        <div class="card-footer text-muted">
-                            Published at 2021-04-11
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3">
-                <a href="">
-                    <div class="card mb-4">
-                        <img src="https://cdn.searchenginejournal.com/wp-content/uploads/2019/07/shutterstock_1457601002.png"
-                            class="img-fluid" alt="">
-                        <div class="card-body">
-                            <h5 class="card-titled">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus
-                                repellat illo quis deserunt nemo voluptas!</h5>
-                        </div>
-                        <div class="card-footer text-muted">
-                            Published at 2021-04-11
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-3">
-                <a href="">
-                    <div class="card mb-4">
-                        <img src="https://cdn.searchenginejournal.com/wp-content/uploads/2019/07/shutterstock_1457601002.png"
-                            class="img-fluid" alt="">
-                        <div class="card-body">
-                            <h5 class="card-titled">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus
-                                repellat illo quis deserunt nemo voluptas!</h5>
-                        </div>
-                        <div class="card-footer text-muted">
-                            Published at 2021-04-11
-                        </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
+            @endforeach
         </div>
     </div>
 @endsection
